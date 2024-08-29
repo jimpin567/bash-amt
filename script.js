@@ -1,9 +1,36 @@
+function toggleDeductions() {
+    const deductionsType = document.getElementById('deductionsType').value;
+    document.getElementById('itemizedDeductions').style.display = deductionsType === 'itemized' ? 'block' : 'none';
+}
+
 function calculateAMT() {
     const filingStatus = document.getElementById('filingStatus').value;
     const totalIncome = parseFloat(document.getElementById('totalIncome').value);
-    const deductions = parseFloat(document.getElementById('deductions').value);
+    
+    // Stock Options
+    const isoShares = parseFloat(document.getElementById('isoShares').value) || 0;
+    const exercisePrice = parseFloat(document.getElementById('exercisePrice').value) || 0;
+    const fmv = parseFloat(document.getElementById('fmv').value) || 0;
+    const isoIncome = isoShares * (fmv - exercisePrice);
 
-    // AMT Exemption based on filing status
+    // Deductions
+    let deductions = 0;
+    const deductionsType = document.getElementById('deductionsType').value;
+    if (deductionsType === 'standard') {
+        deductions = filingStatus === 'single' || filingStatus === 'separate' ? 13850 : filingStatus === 'married' ? 27700 : 20800;
+    } else {
+        const salt = parseFloat(document.getElementById('salt').value) || 0;
+        const mortgageInterest = parseFloat(document.getElementById('mortgageInterest').value) || 0;
+        const charitableContributions = parseFloat(document.getElementById('charitableContributions').value) || 0;
+        const medicalExpenses = parseFloat(document.getElementById('medicalExpenses').value) || 0;
+        const miscDeductions = parseFloat(document.getElementById('miscDeductions').value) || 0;
+        deductions = salt + mortgageInterest + charitableContributions + medicalExpenses + miscDeductions;
+    }
+
+    // AMT Income Calculation
+    const amtIncome = totalIncome + isoIncome - deductions;
+
+    // AMT Exemption Calculation
     let exemption = 0;
     if (filingStatus === 'single') {
         exemption = 81800;
@@ -14,9 +41,6 @@ function calculateAMT() {
     } else if (filingStatus === 'head') {
         exemption = 81800;
     }
-
-    // Calculate AMT income
-    const amtIncome = totalIncome - deductions;
 
     // Reduce exemption for high-income earners
     if (amtIncome > (filingStatus === 'married' ? 1036800 : 523600)) {
@@ -34,7 +58,7 @@ function calculateAMT() {
     // Subtract exemption
     tentativeAMT -= exemption;
 
-    // Show the result
+    // Display the result
     document.getElementById('results').style.display = 'block';
     document.getElementById('amtResult').textContent = tentativeAMT > 0 ? 
         `You owe an AMT of $${tentativeAMT.toFixed(2)}` : 
