@@ -9,23 +9,56 @@
 <body>
     <div class="container">
         <h1>2024 AMT Calculator</h1>
-        <form id="amt-form">
-            <label for="filingStatus">Filing Status:</label>
-            <select id="filingStatus">
-                <option value="single">Single</option>
-                <option value="married">Married Filing Jointly</option>
-                <option value="separate">Married Filing Separately</option>
-                <option value="head">Head of Household</option>
-            </select>
+      <form id="amt-form">
+    <!-- Existing Fields -->
+    <label for="filingStatus">Filing Status:</label>
+    <select id="filingStatus">
+        <option value="single">Single</option>
+        <option value="married">Married Filing Jointly</option>
+        <option value="separate">Married Filing Separately</option>
+        <option value="head">Head of Household</option>
+    </select>
 
-            <label for="totalIncome">Total Income:</label>
-            <input type="number" id="totalIncome" required>
+    <label for="totalIncome">Total Income:</label>
+    <input type="number" id="totalIncome" required>
 
-            <label for="deductions">Deductions:</label>
-            <input type="number" id="deductions" required>
+    <!-- New Fields -->
+    <h3>Exercised Stock Options</h3>
+    <label for="isoShares">Number of ISO Shares:</label>
+    <input type="number" id="isoShares">
 
-            <button type="button" onclick="calculateAMT()">Calculate AMT</button>
-        </form>
+    <label for="exercisePrice">Exercise Price per Share:</label>
+    <input type="number" id="exercisePrice">
+
+    <label for="fmv">Fair Market Value per Share at Exercise:</label>
+    <input type="number" id="fmv">
+
+    <h3>Deductions</h3>
+    <label for="deductionsType">Deduction Type:</label>
+    <select id="deductionsType" onchange="toggleDeductions()">
+        <option value="standard">Standard Deduction</option>
+        <option value="itemized">Itemized Deductions</option>
+    </select>
+
+    <div id="itemizedDeductions" style="display: none;">
+        <label for="salt">State and Local Taxes:</label>
+        <input type="number" id="salt">
+
+        <label for="mortgageInterest">Mortgage Interest:</label>
+        <input type="number" id="mortgageInterest">
+
+        <label for="charitableContributions">Charitable Contributions:</label>
+        <input type="number" id="charitableContributions">
+
+        <label for="medicalExpenses">Medical Expenses:</label>
+        <input type="number" id="medicalExpenses">
+
+        <label for="miscDeductions">Miscellaneous Deductions:</label>
+        <input type="number" id="miscDeductions">
+    </div>
+
+    <button type="button" onclick="calculateAMT()">Calculate AMT</button>
+</form>
         <div id="results">
             <h2>Your AMT Results</h2>
             <p id="amtResult"></p>
